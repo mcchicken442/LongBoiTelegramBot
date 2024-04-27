@@ -1,5 +1,4 @@
 ﻿
-
     public enum AuthSaveMode
     {
         PlayerPrefs,
@@ -13,5 +12,5 @@
         public string fileName = "leaderboard-creator-guid.txt";
         public bool isUpdateLogsEnabled = true;
         
-        //public TextAsset leaderboardsFile;
+        public string leaderboardsFile = "";
     }

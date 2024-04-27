@@ -129,7 +129,7 @@ public class TelegramBot
         commandModel.CommandSections = PrepareCommandSections(commandString);
         commandModel.CommandIsAvailable = CheckIfCommandAvailable(commandModel.CommandSections);
         commandModel.Command = commandModel.CommandIsAvailable ? commandModel.CommandSections[1] : String.Empty;
-        commandModel.CommandHasParameter = commandModel.CommandIsAvailable && commandModel.CommandSections.Count() > 2;
+        commandModel.CommandHasParameter = commandModel.CommandIsAvailable && commandModel.CommandSections.Length > 2;
         commandModel.CommandParameter = commandModel.CommandHasParameter ? commandModel.CommandSections[2] : String.Empty;
 
         return commandModel;

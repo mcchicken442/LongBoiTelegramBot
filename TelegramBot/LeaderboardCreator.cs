@@ -9,7 +9,7 @@ using System.Collections;
         
         private static LeaderboardCreatorBehaviour _behaviour;
 
-        internal static string UserGuid;
+        internal static string? UserGuid;
         
         private const string FORM_PUBLIC_KEY = "publicKey", FORM_USERNAME = "username", FORM_SCORE = "score",
             FORM_EXTRA = "extra", FORM_USER_GUID = "userGuid";
@@ -19,8 +19,8 @@ using System.Collections;
             Log("Initializing...");
             _behaviour = new LeaderboardCreatorBehaviour();
 
-            if (LeaderboardCreatorBehaviour.Config.authSaveMode != AuthSaveMode.Unhandled)
-                _behaviour.Authorize(OnAuthorizationAttempted);
+            //if (LeaderboardCreatorBehaviour.Config.authSaveMode != AuthSaveMode.Unhandled)
+            _behaviour.Authorize(OnAuthorizationAttempted);
         }
 
         private static void OnAuthorizationAttempted(string guid)
@@ -29,14 +29,16 @@ using System.Collections;
             {
                 Log("<b><color=#FF0000>Failed to connect to server, trying again...</color></b>");
 
-                IEnumerator Co()
-                {
-                    yield return new WaitForSeconds(5f);
-                    _behaviour.Authorize(OnAuthorizationAttempted);
-                }
+            /*
+            IEnumerator Co()
+            {
+                yield return new WaitForSeconds(5f);
+                _behaviour.Authorize(OnAuthorizationAttempted);
+            }
+            */
 
-                _behaviour.StartCoroutine(Co());
-                return;
+            _behaviour.Authorize(OnAuthorizationAttempted);
+            return;
             }
             SetUserGuid(guid);
         }
@@ -66,7 +68,7 @@ using System.Collections;
         /// Pings the server to check if a connection can be established.
         /// </summary>
         /// <param name="isOnline">If true, the server is online, else connection failed.</param>
-        public static void Ping(Action<bool> isOnline) => _behaviour.SendGetRequest(GetServerURL(), isOnline, null);
+        public static void Ping(Action<bool> isOnline) => _behaviour.SendGetRequest(ConstantVariables.GetServerURL(), isOnline, null);
 
         /// <summary>
         /// Fetches a leaderboard with the given public key.
@@ -108,7 +110,7 @@ using System.Collections;
             var query = $"?publicKey={publicKey}&userGuid={UserGuid}";
             query += searchQuery.ChainQuery();
             
-            _behaviour.SendGetRequest(GetServerURL(Routes.Get, query), callback, errorCallback);
+            _behaviour.SendGetRequest(ConstantVariables.GetServerURL(Routes.Get, query), callback, errorCallback);
         }
 
         /// <summary>
@@ -131,7 +133,7 @@ using System.Collections;
             var query = $"?publicKey={publicKey}&userGuid={UserGuid}&isInAscendingOrder={(isInAscendingOrder ? 1 : 0)}";
             query += searchQuery.ChainQuery();
             
-            _behaviour.SendGetRequest(GetServerURL(Routes.Get, query), callback, errorCallback);
+            _behaviour.SendGetRequest(ConstantVariables.GetServerURL(Routes.Get, query), callback, errorCallback);
         }
         
         /// <summary>
@@ -182,7 +184,7 @@ using System.Collections;
                     Log("Successfully uploaded entry data to leaderboard!");
             };
             
-            _behaviour.SendPostRequest(GetServerURL(Routes.Upload), Requests.Form(
+            _behaviour.SendPostRequest(ConstantVariables.GetServerURL(Routes.Upload), Requests.Form(
                 Requests.Field(FORM_PUBLIC_KEY, publicKey),
                 Requests.Field(FORM_USERNAME, username),
                 Requests.Field(FORM_SCORE, score.ToString()),
@@ -219,7 +221,7 @@ using System.Collections;
                     Log("Successfully updated player's username!");
             };
             
-            _behaviour.SendPostRequest(GetServerURL(Routes.UpdateUsername), Requests.Form(
+            _behaviour.SendPostRequest(ConstantVariables.GetServerURL(Routes.UpdateUsername), Requests.Form(
                 Requests.Field(FORM_PUBLIC_KEY, publicKey),
                 Requests.Field(FORM_USERNAME, username),
                 Requests.Field(FORM_USER_GUID, UserGuid)), callback, errorCallback);
@@ -247,7 +249,7 @@ using System.Collections;
                     Log("Successfully deleted player's entry!");
             };
             
-            _behaviour.SendPostRequest(GetServerURL(Routes.DeleteEntry), Requests.Form(
+            _behaviour.SendPostRequest(ConstantVariables.GetServerURL(Routes.DeleteEntry), Requests.Form(
                 Requests.Field(FORM_PUBLIC_KEY, publicKey),
                 Requests.Field(FORM_USER_GUID, UserGuid)), callback, errorCallback);
         }
@@ -266,7 +268,7 @@ using System.Collections;
                 return;
             }
             
-            _behaviour.SendGetRequest(GetServerURL(Routes.GetPersonalEntry, 
+            _behaviour.SendGetRequest(ConstantVariables.GetServerURL(Routes.GetPersonalEntry, 
                 $"?publicKey={publicKey}&userGuid={UserGuid}"), callback, errorCallback);
         }
         
@@ -284,7 +286,7 @@ using System.Collections;
                 return;
             }
             
-            _behaviour.SendGetRequest(GetServerURL(Routes.GetEntryCount) + $"?publicKey={publicKey}", callback, errorCallback);
+            _behaviour.SendGetRequest(ConstantVariables.GetServerURL(Routes.GetEntryCount) + $"?publicKey={publicKey}", callback, errorCallback);
         }
         
         /// <summary>
@@ -298,12 +300,12 @@ using System.Collections;
         internal static void Log(string message)
         {
             if (!LoggingEnabled) return;
-            Debug.Log($"[LeaderboardCreator] {message}");
+            //Debug.Log($"[LeaderboardCreator] {message}");
         }
         
         internal static void LogError(string message)
         {
             if (!LoggingEnabled) return;
-            Debug.LogError($"[LeaderboardCreator] {message}");
+            //Debug.LogError($"[LeaderboardCreator] {message}");
         }
     }

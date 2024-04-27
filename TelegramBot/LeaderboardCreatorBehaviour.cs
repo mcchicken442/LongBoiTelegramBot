@@ -5,21 +5,31 @@ using System.Net.Http;
 using System.Web;
 using System.Net;
 using System.IO;
+using Microsoft.AspNet.SignalR.Json;
+using Microsoft.AspNetCore.Http;
 
 
 public sealed class LeaderboardCreatorBehaviour
     {
+        
+        private static HttpClient sharedClient = new()
+        {
+            BaseAddress = new Uri(ConstantVariables.GetServerURL()),
+        };
+
         [Serializable]
         private struct EntryResponse
         {
             public Entry[] entries;
         }
         
+        /*
         internal static LeaderboardCreatorConfig Config =>
             Resources.Load<LeaderboardCreatorConfig>("LeaderboardCreatorConfig");
 
         private static string GetError(WebRequest request) =>
             $"{request.responseCode}: {request.downloadHandler.text}";
+        */
         
         internal void Authorize(Action<string> callback)
         {
@@ -30,20 +40,20 @@ public sealed class LeaderboardCreatorBehaviour
                 return;
             }
             
-            var request = WebRequest.Get(GetServerURL(Routes.Authorize));
-            StartCoroutine(HandleRequest(request, isSuccessful =>
+            var request = WebRequest.Get(ConstantVariables.GetServerURL(Routes.Authorize));
+            HandleRequest(request, isSuccessful =>
             {
                 if (!isSuccessful)
                 {
-                    HandleError(request);
+                    //HandleError(request);
                     callback?.Invoke(null);
                     return;
                 }
 
                 var guid = request.downloadHandler.text;
-                SaveGuid(guid);
+                //SaveGuid(guid);
                 callback?.Invoke(guid);
-            }));
+            });
         }
         
         internal void ResetAndAuthorize(Action<string> callback, Action onFinish)
@@ -54,88 +64,88 @@ public sealed class LeaderboardCreatorBehaviour
                     return;
                 onFinish?.Invoke();
             };
-            DeleteGuid();
+            //DeleteGuid();
             Authorize(callback);
         }
         
         internal void SendGetRequest(string url, Action<bool> callback, Action<string> errorCallback)
         {
             var request = WebRequest.Get(url);
-            StartCoroutine(HandleRequest(request, isSuccessful =>
+            HandleRequest(request, isSuccessful =>
             {
                 if (!isSuccessful)
                 {
-                    HandleError(request);
+                    //HandleError(request);
                     callback?.Invoke(false);
-                    errorCallback?.Invoke(GetError(request));
+                    //errorCallback?.Invoke(GetError(request));
                     return;
                 }
                 callback?.Invoke(true);
                 LeaderboardCreator.Log("Successfully retrieved leaderboard data!");
-            }));
+            });
         }
         
         internal void SendGetRequest(string url, Action<int> callback, Action<string> errorCallback)
         {
             var request = WebRequest.Get(url);
-            StartCoroutine(HandleRequest(request, isSuccessful =>
+            HandleRequest(request, isSuccessful =>
             {
                 if (!isSuccessful)
                 {
-                    HandleError(request);
+                    //HandleError(request);
                     callback?.Invoke(0);
-                    errorCallback?.Invoke(GetError(request));
+                    //errorCallback?.Invoke(GetError(request));
                     return;
                 }
                 callback?.Invoke(int.Parse(request.downloadHandler.text));
                 LeaderboardCreator.Log("Successfully retrieved leaderboard data!");
-            }));
+            });
         }
         
         internal void SendGetRequest(string url, Action<Entry> callback, Action<string> errorCallback)
         {
             var request = WebRequest.Get(url);
-            StartCoroutine(HandleRequest(request, isSuccessful =>
+            HandleRequest(request, isSuccessful =>
             {
                 if (!isSuccessful)
                 {
-                    HandleError(request);
+                    //HandleError(request);
                     callback?.Invoke(new Entry());
-                    errorCallback?.Invoke(GetError(request));
+                    //errorCallback?.Invoke(GetError(request));
                     return;
                 }
                 var response = JsonUtility.FromJson<Entry>(request.downloadHandler.text);
                 callback?.Invoke(response);
                 LeaderboardCreator.Log("Successfully retrieved leaderboard data!");
-            }));
+            });
         }
         
         internal void SendGetRequest(string url, Action<Entry[]> callback, Action<string> errorCallback)
         {
             var request = WebRequest.Get(url);
-            StartCoroutine(HandleRequest(request, isSuccessful =>
+            HandleRequest(request, isSuccessful =>
             {
                 if (!isSuccessful)
                 {
-                    HandleError(request);
+                    //HandleError(request);
                     callback?.Invoke(Array.Empty<Entry>());
-                    errorCallback?.Invoke(GetError(request));
+                    //errorCallback?.Invoke(GetError(request));
                     return;
                 }
                 var response = JsonUtility.FromJson<EntryResponse>($"{{\"entries\":{request.downloadHandler.text}}}");
                 callback?.Invoke(response.entries);
                 LeaderboardCreator.Log("Successfully retrieved leaderboard data!");
-            }));
+            });
         }
-        /*
+        
         internal void SendPostRequest(string url, List<IMultipartFormSection> form, Action<bool> callback = null, Action<string> errorCallback = null)
         {
             var request = WebRequest.Post(url, form);
-            StartCoroutine(HandleRequest(request, callback, errorCallback));
+            HandleRequest(request, callback, errorCallback);
         }
-        */
         
-        private static IEnumerator HandleRequest(WebRequest request, Action<bool> onComplete, Action<string> errorCallback = null)
+        
+        private static IEnumerator HandleRequest(HttpRequest request, Action<bool> onComplete, Action<string> errorCallback = null)
         {
 
             yield return request.SendWebRequest();
@@ -143,17 +153,17 @@ public sealed class LeaderboardCreatorBehaviour
             if (request.responseCode != 200)
             {
                 onComplete.Invoke(false);
-                errorCallback?.Invoke(GetError(request));
-                request.downloadHandler.Dispose();
-                request.Dispose();
+                //errorCallback?.Invoke(GetError(request));
+                //request.downloadHandler.Dispose();
+                //request.Dispose();
                 yield break;
             }
 
             onComplete.Invoke(true);
-            request.downloadHandler.Dispose();
-            request.Dispose();
+            //request.downloadHandler.Dispose();
+            //request.Dispose();
         }
-        
+        /*
         private static void HandleError(WebRequest request)
         {
             var message = Enum.GetName(typeof(StatusCode), (StatusCode) request.responseCode);
@@ -182,9 +192,11 @@ public sealed class LeaderboardCreatorBehaviour
                     break;
             }
         }
-        
+        */
         private static string LoadGuid()
         {
+            return "";
+            /*
             switch (Config.authSaveMode)
             {
                 case AuthSaveMode.PlayerPrefs:
@@ -195,14 +207,16 @@ public sealed class LeaderboardCreatorBehaviour
                 default:
                     return "";
             }
+            */
         }
-
+        
+        /*
         private static void DeleteGuid()
         {
             switch (Config.authSaveMode)
             {
                 case AuthSaveMode.PlayerPrefs:
-                    PlayerPrefs.DeleteKey(GUID_KEY);
+                    AuthSaveMode.PlayerPrefs.DeleteKey(GUID_KEY);
                     PlayerPrefs.Save();
                     break;
                 case AuthSaveMode.PersistentDataPath:
@@ -213,4 +227,5 @@ public sealed class LeaderboardCreatorBehaviour
                     break;
             }
         }
+        */
     }
