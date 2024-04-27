@@ -9,14 +9,22 @@ using ResourceHandler.Resources;
 using ResourceHandler.Resources.Models.TelegramBot;
 using System.ComponentModel;
 using ResourceHandler.Resources.Enums;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Threading;
 
 public class TelegramBot
 {
     private static TelegramBotClient? botClient;
+    private string[]? scoreStrings;
+    private string? allScoresString;
+    private LeaderboardManager? leaderboardManager;
 
     public void Start()
     {
-        botClient = new TelegramBotClient("6059318905:AAEd43DBh6BFRwH1EbRch6zxDeF3S1OzACk");
+        botClient = new TelegramBotClient("7124354633:AAGDAxr3kPc1VDtt4PRk4nXe_UmcCZvNwLA"); // long boi bot key
+
+        leaderboardManager = new LeaderboardManager();
 
         CancellationTokenSource cts;
         cts = new CancellationTokenSource();
@@ -49,6 +57,7 @@ public class TelegramBot
         if (!ProjectInitializer.Config.Bot_Status) await bot.SendTextMessageAsync(chatId, "I'm sorry, I can't help you at the moment.");
         else
         {
+
             CommandModel commandModel = CheckMessage(update.Message.Text);
             if (!commandModel.CommandIsAvailable) { await bot.SendTextMessageAsync(chatId, "I'm sorry, I couldn't understand you. Please type /help for my current command list."); return; }
 
@@ -58,6 +67,20 @@ public class TelegramBot
             {
                 switch (enumCommand)
                 {
+                    case Enums.Commands.SCORES:
+                        {
+                            allScoresString = "";
+                            scoreStrings = leaderboardManager.LoadEntries();
+
+                            for (int i = 0; i < scoreStrings.Length; i++)
+                            {
+                                allScoresString += scoreStrings[i];
+                                allScoresString += System.Environment.NewLine;
+                            }
+                            
+                            await bot.SendTextMessageAsync(chatId, allScoresString);
+                        }
+                        break;
                     case Enums.Commands.WEATHER:
                         {
                             if (!commandModel.CommandHasParameter) await bot.SendTextMessageAsync(chatId, "The weather is very nice today.");
