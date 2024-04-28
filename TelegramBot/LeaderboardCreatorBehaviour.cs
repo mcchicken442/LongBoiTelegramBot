@@ -9,6 +9,8 @@ using Microsoft.AspNet.SignalR.Json;
 using Microsoft.AspNetCore.Http;
 using System.Text;
 using System.Text.Json;
+using Newtonsoft.Json;
+using Nancy.Json;
 
 
 public sealed class LeaderboardCreatorBehaviour
@@ -212,14 +214,21 @@ public sealed class LeaderboardCreatorBehaviour
             LeaderboardCreator.Log("Successfully retrieved leaderboard data!");
         });
         */
-            using HttpResponseMessage aresponse = await httpClient.GetAsync(url);
-        using EntryResponse response = (EntryResponse)await httpClient.GetAsync(url);
+            using HttpResponseMessage response = await httpClient.GetAsync(url);
+        string responseBodyString = await response.Content.ReadAsStringAsync();
+        //responseBodyString = responseBodyString.Substring(1, responseBodyString.Length-2);
+        //responseBodyString = Newtonsoft.Json.JsonConvert.DeserializeObject<string>(responseBodyString);
+        //var result = responseBodyString.Split(",{");
 
-            try
+        JavaScriptSerializer js = new JavaScriptSerializer();
+        Entry[] entries = js.Deserialize<Entry[]>(responseBodyString);
+        //using EntryResponse response = (EntryResponse)await httpClient.GetAsync(url);
+
+        try
             {
                 response.EnsureSuccessStatusCode();
                 //var jsonResponse = await response.Content.ReadAsStringAsync();
-                callback?.Invoke(response.entries);
+                callback?.Invoke(entries);
                 LeaderboardCreator.Log("Successfully retrieved leaderboard data!");
             }
             catch (Exception e)
@@ -233,7 +242,7 @@ public sealed class LeaderboardCreatorBehaviour
         internal async void  SendPostRequest(string url, List<IMultipartFormSection> form, Action<bool> callback = null, Action<string> errorCallback = null)
         {
             using StringContent jsonContent = new(
-                JsonSerializer.Serialize(new
+                System.Text.Json.JsonSerializer.Serialize(new
                 {
                     form = form
                 }),

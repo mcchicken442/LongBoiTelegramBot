@@ -12,7 +12,7 @@ public class LeaderboardManager
         var searchQuery = new LeaderboardSearchQuery
         {
             Skip = 0,
-            Take = 100,
+            Take = 10,
             TimePeriod = TimePeriodType.AllTime
         };
 

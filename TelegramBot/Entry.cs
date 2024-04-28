@@ -1,6 +1,6 @@
 ﻿
     [System.Serializable]
-    public struct Entry
+    public class Entry
     {
         public string Username;
         public int Score;
@@ -9,6 +9,14 @@
         public int Rank;
         internal string UserGuid;
         [field: System.NonSerialized] internal string NewUsername { get; set; }
+
+        public Entry()
+    {
+        this.NewUsername = "";
+        this.Username = "";
+        this.Extra = "";
+        this.UserGuid = "";
+    }
         
 
         /// <summary>
