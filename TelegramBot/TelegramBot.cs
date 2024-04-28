@@ -20,6 +20,13 @@ public class TelegramBot
     private string? allScoresString;
     private LeaderboardManager? leaderboardManager;
 
+    [STAThread]
+    static void Main()
+    {
+        TelegramBot bot = new TelegramBot();
+        bot.Start();
+    }
+
     public void Start()
     {
         botClient = new TelegramBotClient("7124354633:AAGDAxr3kPc1VDtt4PRk4nXe_UmcCZvNwLA"); // long boi bot key
