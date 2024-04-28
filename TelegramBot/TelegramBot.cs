@@ -47,6 +47,13 @@ public class TelegramBot
         botClient.StartReceiving(UpdateHandler, ErrorHandler, receiverOptions, cancellationToken: cts.Token);
 
         Console.WriteLine("Bot is running. Press any key to exit.");
+        do
+        {
+            while (!Console.KeyAvailable)
+            {
+                // Do something
+            }
+        } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
     }
 
     private async Task UpdateHandler(ITelegramBotClient bot, Update update, CancellationToken token)
@@ -88,12 +95,6 @@ public class TelegramBot
                             await bot.SendTextMessageAsync(chatId, allScoresString);
                         }
                         break;
-                    case Enums.Commands.WEATHER:
-                        {
-                            if (!commandModel.CommandHasParameter) await bot.SendTextMessageAsync(chatId, "The weather is very nice today.");
-                            else await bot.SendTextMessageAsync(chatId, "The weather for " + commandModel.CommandSections[2] + " is rainy today. \nDon't forget your umbrella (:");
-                        }
-                        break;
                     case Enums.Commands.ERROR:
                         {
                             await bot.SendTextMessageAsync(chatId + 1, "This will generate Error (:");
@@ -101,8 +102,7 @@ public class TelegramBot
                         break;
                     case Enums.Commands.HELP:
                         {
-                            await bot.SendTextMessageAsync(chatId, " /weather : Get Current Weather Information for your Location. " +
-                                "\n /weather [City] : Get Current Weather Information for Selected City." +
+                            await bot.SendTextMessageAsync(chatId, "/scores : Shows current high scores for the long boi game" + 
                                 "\n /error : This is Development Test Purposed Command. No Need To Use It." +
                                 "\n /help : Get Information About The Commands.");
                         }
