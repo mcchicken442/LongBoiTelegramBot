@@ -3,5 +3,5 @@
   "API_KEY": "6113787968:AAGBZrTRN5MfouZyNrq7-vHxorktGs8-9sw",
   "Bot_Status": true,
   "Chat_Id": -1,
-  "AvailableCommandsText": "help,weather,error,hello,today"
+  "AvailableCommandsText": "scores,help,weather,error,hello,today"
 }
