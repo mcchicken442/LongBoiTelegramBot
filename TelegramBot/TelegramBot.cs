@@ -25,6 +25,7 @@ public class TelegramBot
     {
         try
         {
+            ProjectInitializer.InitializeConfig(); // Base project Initialization done.
             TelegramBot bot = new TelegramBot();
             bot.Start();
         }

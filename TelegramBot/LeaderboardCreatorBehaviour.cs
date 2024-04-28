@@ -196,24 +196,24 @@ public sealed class LeaderboardCreatorBehaviour
         
         internal async void SendGetRequest(string url, Action<Entry[]> callback, Action<string> errorCallback)
         {
-            /*
-            var request = WebRequest.Get(url);
-            HandleRequest(request, isSuccessful =>
+        /*
+        var request = WebRequest.Get(url);
+        HandleRequest(request, isSuccessful =>
+        {
+            if (!isSuccessful)
             {
-                if (!isSuccessful)
-                {
-                    //HandleError(request);
-                    callback?.Invoke(Array.Empty<Entry>());
-                    //errorCallback?.Invoke(GetError(request));
-                    return;
-                }
-                var response = JsonUtility.FromJson<EntryResponse>($"{{\"entries\":{request.downloadHandler.text}}}");
-                callback?.Invoke(response.entries);
-                LeaderboardCreator.Log("Successfully retrieved leaderboard data!");
-            });
-            */
-
-            using EntryResponse response = (EntryResponse)await httpClient.GetAsync(url);
+                //HandleError(request);
+                callback?.Invoke(Array.Empty<Entry>());
+                //errorCallback?.Invoke(GetError(request));
+                return;
+            }
+            var response = JsonUtility.FromJson<EntryResponse>($"{{\"entries\":{request.downloadHandler.text}}}");
+            callback?.Invoke(response.entries);
+            LeaderboardCreator.Log("Successfully retrieved leaderboard data!");
+        });
+        */
+            using HttpResponseMessage aresponse = await httpClient.GetAsync(url);
+        using EntryResponse response = (EntryResponse)await httpClient.GetAsync(url);
 
             try
             {
