@@ -12,6 +12,10 @@ using ResourceHandler.Resources.Enums;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
+using Nancy.Json;
+
+using Nancy;
+using System.Net.Http;
 
 public class TelegramBot
 {
@@ -19,6 +23,10 @@ public class TelegramBot
     private string[]? scoreStrings;
     private string? allScoresString;
     private LeaderboardManager leaderboardManager = new LeaderboardManager();
+    private static HttpClient httpClient = new()
+    {
+        BaseAddress = new Uri(ConstantVariables.GetServerURL()),
+    };
 
     [STAThread]
     static void Main()
@@ -90,12 +98,27 @@ public class TelegramBot
                 {
                     case Enums.Commands.SCORES:
                         {
-                            allScoresString = "";
-                            scoreStrings = leaderboardManager.LoadEntries();
+                            allScoresString = "Long Boi Game Leaderboard";
+                            allScoresString += System.Environment.NewLine;
+                            allScoresString += System.Environment.NewLine;
+                            //scoreStrings = leaderboardManager.LoadEntries();
 
-                            for (int i = 0; i < scoreStrings.Length; i++)
+                            using HttpResponseMessage response = await httpClient.GetAsync(
+                                "https://lcv2-server.danqzq.games/get?publicKey=60dc09e3a6ebb6b8e7f4a63ec7d3361feda25c96b6b40e83d2a8741c0d80cf7a&userGuid=&skip=0&take=10&username=&timePeriod=0");
+                            string responseBodyString = await response.Content.ReadAsStringAsync();
+                            
+
+                            JavaScriptSerializer js = new JavaScriptSerializer();
+                            Entry[] entries = js.Deserialize<Entry[]>(responseBodyString);
+
+                            string[] _entryTextObjects = new string[entries.Length];
+                            for (int i = 0; i<entries.Length; i++)
+                                _entryTextObjects[i] = $"{entries[i].Rank}. {entries[i].Username} - {entries[i].Score}";
+
+                            for (int i = 0; i < _entryTextObjects.Length; i++)
                             {
-                                allScoresString += scoreStrings[i];
+                                allScoresString += _entryTextObjects[i];
+                                allScoresString += System.Environment.NewLine;
                                 allScoresString += System.Environment.NewLine;
                             }
                             
@@ -104,7 +127,7 @@ public class TelegramBot
                         break;
                     case Enums.Commands.ERROR:
                         {
-                            await bot.SendTextMessageAsync(chatId + 1, "This will generate Error (:");
+                            await bot.SendTextMessageAsync(chatId, "Error");
                         }
                         break;
                     case Enums.Commands.HELP:
