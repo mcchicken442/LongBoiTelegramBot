@@ -18,13 +18,19 @@ public class TelegramBot
     private static TelegramBotClient? botClient;
     private string[]? scoreStrings;
     private string? allScoresString;
-    private LeaderboardManager? leaderboardManager;
+    private LeaderboardManager leaderboardManager = new LeaderboardManager();
 
     [STAThread]
     static void Main()
     {
-        TelegramBot bot = new TelegramBot();
-        bot.Start();
+        try
+        {
+            TelegramBot bot = new TelegramBot();
+            bot.Start();
+        }
+        catch (Exception ex) {
+            Console.WriteLine(ex.ToString());
+        }
     }
 
     public void Start()
@@ -130,7 +136,7 @@ public class TelegramBot
 
     private CommandModel CheckMessage(string? commandString)
     {
-        CommandModel commandModel = new CommandModel();
+        CommandModel commandModel = new();
 
         commandModel.CommandText = commandString;
         commandModel.CommandSections = PrepareCommandSections(commandString);

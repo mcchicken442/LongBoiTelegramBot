@@ -7,18 +7,15 @@ using System.Collections;
     {
         public static bool LoggingEnabled { get; set; } = true;
         
-        private static LeaderboardCreatorBehaviour _behaviour;
+        private static LeaderboardCreatorBehaviour _behaviour = new();
 
         internal static string? UserGuid;
         
         private const string FORM_PUBLIC_KEY = "publicKey", FORM_USERNAME = "username", FORM_SCORE = "score",
             FORM_EXTRA = "extra", FORM_USER_GUID = "userGuid";
 
-        private static void Initialize()
+        private static void LeaderboardCreatorBehaviour()
         {
-            Log("Initializing...");
-            _behaviour = new LeaderboardCreatorBehaviour();
-
             //if (LeaderboardCreatorBehaviour.Config.authSaveMode != AuthSaveMode.Unhandled)
             _behaviour.Authorize(OnAuthorizationAttempted);
         }

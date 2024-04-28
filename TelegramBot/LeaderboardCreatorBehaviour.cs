@@ -21,7 +21,7 @@ public sealed class LeaderboardCreatorBehaviour
 
         private class EntryResponse : HttpResponseMessage
         {
-            public Entry[]? entries;
+            public Entry[] entries;
         }
 
     private class SingleEntryResponse : HttpResponseMessage
@@ -61,7 +61,7 @@ public sealed class LeaderboardCreatorBehaviour
         }
         catch (Exception e)
         {
-            callback?.Invoke(null);
+            callback?.Invoke("null");
         }
         /*
         var request = WebRequest.Get(ConstantVariables.GetServerURL(Routes.Authorize));

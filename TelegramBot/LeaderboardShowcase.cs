@@ -8,7 +8,7 @@ using ResourceHandler.Resources.Enums;
 public class LeaderboardShowcase
     {
         private int _defaultPageNumber = 1, _defaultEntriesToTake = 100;
-        private Entry[]? leaderboardEntries;
+        private Entry[] leaderboardEntries = new Entry[1];
         
         public void Load()
         {
