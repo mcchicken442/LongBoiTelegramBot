@@ -88,7 +88,9 @@ public class TelegramBot
         {
 
             CommandModel commandModel = CheckMessage(update.Message.Text);
-            if (!commandModel.CommandIsAvailable) { await bot.SendTextMessageAsync(chatId, "I'm sorry, I couldn't understand you. Please type /help for my current command list."); return; }
+            if (!commandModel.CommandIsAvailable) { 
+                //await bot.SendTextMessageAsync(chatId, "I'm sorry, I couldn't understand you. Please type /help for my current command list."); 
+                return; }
 
             string? username = update.Message.Chat.Username;
 
@@ -101,23 +103,24 @@ public class TelegramBot
                             allScoresString = "Long Boi Game Leaderboard";
                             allScoresString += System.Environment.NewLine;
                             allScoresString += System.Environment.NewLine;
-                            //scoreStrings = leaderboardManager.LoadEntries();
+                            
+                            leaderboardManager.LoadEntries();
 
-                            using HttpResponseMessage response = await httpClient.GetAsync(
-                                "https://lcv2-server.danqzq.games/get?publicKey=60dc09e3a6ebb6b8e7f4a63ec7d3361feda25c96b6b40e83d2a8741c0d80cf7a&userGuid=&skip=0&take=10&username=&timePeriod=0");
-                            string responseBodyString = await response.Content.ReadAsStringAsync();
+                            //using HttpResponseMessage response = await httpClient.GetAsync(
+                           //     "https://lcv2-server.danqzq.games/get?publicKey=60dc09e3a6ebb6b8e7f4a63ec7d3361feda25c96b6b40e83d2a8741c0d80cf7a&userGuid=&skip=0&take=10&username=&timePeriod=0");
+                           // string responseBodyString = await response.Content.ReadAsStringAsync();
                             
 
-                            JavaScriptSerializer js = new JavaScriptSerializer();
-                            Entry[] entries = js.Deserialize<Entry[]>(responseBodyString);
+                            //JavaScriptSerializer js = new JavaScriptSerializer();
+                            //Entry[] entries = js.Deserialize<Entry[]>(responseBodyString);
 
-                            string[] _entryTextObjects = new string[entries.Length];
-                            for (int i = 0; i<entries.Length; i++)
-                                _entryTextObjects[i] = $"{entries[i].Rank}. {entries[i].Username} - {entries[i].Score}";
+                            //string[] _entryTextObjects = new string[entries.Length];
+                            //for (int i = 0; i<entries.Length; i++)
+                            //    _entryTextObjects[i] = $"{entries[i].Rank}. {entries[i].Username} - {entries[i].Score}";
 
-                            for (int i = 0; i < _entryTextObjects.Length; i++)
+                            for (int i = 0; i < leaderboardManager._entryTextObjects.Length; i++)
                             {
-                                allScoresString += _entryTextObjects[i];
+                                allScoresString += leaderboardManager._entryTextObjects[i];
                                 allScoresString += System.Environment.NewLine;
                                 allScoresString += System.Environment.NewLine;
                             }

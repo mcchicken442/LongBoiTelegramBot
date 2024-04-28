@@ -5,9 +5,9 @@ using System;
 
 public class LeaderboardManager
 {
-    private string[] _entryTextObjects = new string[1];
+    public string[] _entryTextObjects = new string[1];
 
-    public string[] LoadEntries() {
+    public void LoadEntries() {
 
         var searchQuery = new LeaderboardSearchQuery
         {
@@ -17,8 +17,6 @@ public class LeaderboardManager
         };
 
         Leaderboards.To428.GetEntries(searchQuery, EntriesToString);
-            
-        return _entryTextObjects;
     }
 
     public void EntriesToString(Entry[] entries)
