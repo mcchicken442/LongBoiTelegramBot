@@ -128,6 +128,7 @@ public class TelegramBot
                             await bot.SendTextMessageAsync(chatId, allScoresString);
                         }
                         break;
+                    /*
                     case Enums.Commands.ERROR:
                         {
                             await bot.SendTextMessageAsync(chatId, "Error");
@@ -151,6 +152,7 @@ public class TelegramBot
 
                         }
                         break;
+                    */
                     default:
                         {
                             await bot.SendTextMessageAsync(chatId, "I'm sorry, I couldn't understand you. Please type /help for my current command list.");
