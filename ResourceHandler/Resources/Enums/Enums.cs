@@ -10,6 +10,7 @@ namespace ResourceHandler.Resources.Enums
     {
        public enum Commands
         {
+            SCORES,
             HELP, 
             WEATHER, 
             ERROR, 
