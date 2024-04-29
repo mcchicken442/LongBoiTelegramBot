@@ -14,7 +14,9 @@ namespace ResourceHandler.Resources
 
         public static void InitializeConfig()
         {
-            using (var reader = new StreamReader(@"C:\Users\ampbr\Desktop\LongBoiTelegramBot\ResourceHandler\Resources\Jsons\Config.json"))
+            //using (var reader = new StreamReader(@"C:\Users\ampbr\Desktop\LongBoiTelegramBot\ResourceHandler\Resources\Jsons\Config.json"))
+            string exactPath = Path.GetFullPath(@"..\..\..\..\ResourceHandler\Resources\Jsons\Config.json");
+            using (var reader = new StreamReader(exactPath))
             {
                 if (reader != null)
                 {
